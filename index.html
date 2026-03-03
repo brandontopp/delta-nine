@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Delta-9 Method | Mood</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    margin: 0;
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .quiz-wrap {
+    width: 100%;
+    max-width: 600px;
+    background: #1B3A2F;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(27,58,47,0.18);
+  }
+
+  /* Header */
+  .quiz-header {
+    padding: 28px 28px 20px;
+    text-align: center;
+  }
+
+  .quiz-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #C9A84C;
+    margin-bottom: 10px;
+  }
+
+  .quiz-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #F5F0E8;
+    line-height: 1.3;
+  }
+
+  /* Progress bar */
+  .progress-bar-track {
+    height: 3px;
+    background: rgba(255,255,255,0.12);
+    margin: 0 28px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: #C9A84C;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: rgba(245,240,232,0.45);
+    text-align: right;
+    padding: 6px 28px 0;
+    letter-spacing: 0.5px;
+  }
+
+  /* Question area */
+  .quiz-body {
+    padding: 24px 28px 28px;
+  }
+
+  .question-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: #F5F0E8;
+    margin-bottom: 18px;
+    line-height: 1.45;
+    min-height: 52px;
+    transition: opacity 0.25s ease;
+  }
+
+  /* Answer buttons */
+  .answers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .answer-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.13);
+    border-radius: 12px;
+    color: #F5F0E8;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 18px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.35;
+  }
+
+  .answer-btn:hover {
+    background: rgba(201,168,76,0.15);
+    border-color: rgba(201,168,76,0.5);
+    transform: translateX(3px);
+  }
+
+  .answer-btn:active {
+    transform: translateX(3px) scale(0.98);
+  }
+
+  .answer-btn.selected {
+    background: rgba(201,168,76,0.22);
+    border-color: #C9A84C;
+  }
+
+  .answer-emoji {
+    font-size: 20px;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+  }
+
+  /* Result card */
+  .result-card {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 0 4px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-icon {
+    font-size: 52px;
+    margin-bottom: 14px;
+    line-height: 1;
+  }
+
+  .result-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #C9A84C;
+    margin-bottom: 8px;
+  }
+
+  .result-method {
+    font-size: 26px;
+    font-weight: 700;
+    color: #F5F0E8;
+    margin-bottom: 14px;
+  }
+
+  .result-divider {
+    width: 40px;
+    height: 2px;
+    background: #C9A84C;
+    border-radius: 1px;
+    margin: 0 auto 16px;
+  }
+
+  .result-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    background: rgba(255,255,255,0.08);
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: #F5F0E8;
+    font-weight: 500;
+  }
+
+  .stat-pill span {
+    color: #C9A84C;
+    font-weight: 700;
+  }
+
+  .result-desc {
+    font-size: 14px;
+    color: rgba(245,240,232,0.72);
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto 24px;
+  }
+
+  /* Shop CTA */
+  .shop-btn {
+    display: inline-block;
+    background: #C9A84C;
+    color: #1B3A2F;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    letter-spacing: 0.4px;
+    margin-bottom: 14px;
+    transition: background 0.18s ease, transform 0.12s ease;
+  }
+
+  .shop-btn:hover {
+    background: #d9b85c;
+    transform: translateY(-1px);
+  }
+
+  /* Restart */
+  .restart-btn {
+    background: transparent;
+    border: 1.5px solid rgba(201,168,76,0.5);
+    border-radius: 30px;
+    color: #C9A84C;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 24px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.18s ease, border-color 0.18s ease;
+  }
+
+  .restart-btn:hover {
+    background: rgba(201,168,76,0.12);
+    border-color: #C9A84C;
+  }
+
+  /* Wordmark */
+  .quiz-wordmark {
+    text-align: center;
+    padding: 14px 28px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: rgba(201,168,76,0.45);
+    text-transform: lowercase;
+  }
+
+  /* Slide transition */
+  .quiz-body.fade-out {
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+
+  .quiz-body.fade-in {
+    opacity: 1;
+    transition: opacity 0.22s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="quiz-wrap">
+
+  <div class="quiz-header">
+    <div class="quiz-eyebrow">Quick Quiz</div>
+    <div class="quiz-title">Which Delta-9 delivery method fits your vibe?</div>
+  </div>
+
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Question 1 of 3</div>
+
+  <div class="quiz-body fade-in" id="quizBody">
+
+    <!-- Questions shown here by JS -->
+    <div class="question-text" id="questionText"></div>
+    <div class="answers" id="answersContainer"></div>
+
+    <!-- Result shown here -->
+    <div class="result-card" id="resultCard">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-label">Your Match</div>
+      <div class="result-method" id="resultMethod"></div>
+      <div class="result-divider"></div>
+      <div class="result-stats" id="resultStats"></div>
+      <div class="result-desc" id="resultDesc"></div>
+      <a class="shop-btn" id="resultCta" href="#" target="_blank" rel="noopener">Shop Now →</a>
+      <button class="restart-btn" onclick="restart()">↺ Try Again</button>
+    </div>
+
+  </div>
+
+  <div class="quiz-wordmark">mood</div>
+
+</div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────────────
+  var questions = [
+    {
+      text: "How soon do you want to feel the effects?",
+      answers: [
+        { emoji: "⚡", label: "Right away — I want to know it's working",  scores: { vape: 3, edible: 0, tincture: 1 } },
+        { emoji: "⏳", label: "I'm patient — slow burn is fine with me",   scores: { vape: 0, edible: 3, tincture: 1 } },
+        { emoji: "⚖️", label: "Somewhere in between, please",               scores: { vape: 1, edible: 0, tincture: 3 } }
+      ]
+    },
+    {
+      text: "How long do you want the experience to last?",
+      answers: [
+        { emoji: "🎯", label: "Short and sweet — 1 to 3 hours tops",       scores: { vape: 3, edible: 0, tincture: 1 } },
+        { emoji: "🌙", label: "Long and deep — 4 to 8 hours sounds great",  scores: { vape: 0, edible: 3, tincture: 0 } },
+        { emoji: "🕐", label: "A few hours — nothing too intense",          scores: { vape: 1, edible: 0, tincture: 3 } }
+      ]
+    },
+    {
+      text: "What's your preferred way to enjoy cannabis?",
+      answers: [
+        { emoji: "💨", label: "Inhaling — vaping or smoking is my thing",   scores: { vape: 3, edible: 0, tincture: 0 } },
+        { emoji: "🍬", label: "Eating it — I love a good gummy",            scores: { vape: 0, edible: 3, tincture: 0 } },
+        { emoji: "💧", label: "Under the tongue — I like precision",        scores: { vape: 0, edible: 0, tincture: 3 } }
+      ]
+    }
+  ];
+
+  var results = {
+    vape: {
+      icon: "💨",
+      method: "Smoking & Vaping",
+      stats: [
+        { label: "Onset",    value: "2–10 min" },
+        { label: "Peak",     value: "15–30 min" },
+        { label: "Duration", value: "1–3 hrs" }
+      ],
+      desc: "Fast-acting and easy to gauge, smoking and vaping let you know exactly where you stand within minutes. Perfect when you want real-time feedback and a shorter, more controlled experience.",
+      url: "https://mood.com/shop/product-category/flower",
+      cta: "Shop Flower & Pre-Rolls →"
+    },
+    edible: {
+      icon: "🍬",
+      method: "Edibles",
+      stats: [
+        { label: "Onset",    value: "30–90 min" },
+        { label: "Peak",     value: "60–120 min" },
+        { label: "Duration", value: "4–8 hrs" }
+      ],
+      desc: "Slow, long-lasting, and full-bodied — edibles are for when you have the time to let the experience unfold. The key: pick your serving size, take it, and be patient. Don't redose early.",
+      url: "https://mood.com/shop/product-category/gummies",
+      cta: "Shop Gummies →"
+    },
+    tincture: {
+      icon: "💧",
+      method: "Tinctures",
+      stats: [
+        { label: "Onset",    value: "15–45 min" },
+        { label: "Peak",     value: "30–90 min" },
+        { label: "Duration", value: "2–5 hrs" }
+      ],
+      desc: "The middle path. Tinctures absorb faster than edibles and let you fine-tune your serving size with more precision than inhaling. A great starting point if you want flexibility without the guesswork.",
+      url: "https://mood.com/shop/product-category/edibles/edible-extracts",
+      cta: "Shop Tinctures & Extracts →"
+    }
+  };
+
+  // ── State ─────────────────────────────────────────────────────
+  var current   = 0;
+  var scores    = { vape: 0, edible: 0, tincture: 0 };
+  var TOTAL     = questions.length;
+
+  // ── Init ──────────────────────────────────────────────────────
+  function init() {
+    current = 0;
+    scores  = { vape: 0, edible: 0, tincture: 0 };
+    showQuestion();
+  }
+
+  function showQuestion() {
+    var q = questions[current];
+    document.getElementById("questionText").textContent = q.text;
+
+    var container = document.getElementById("answersContainer");
+    container.innerHTML = "";
+    q.answers.forEach(function(a, i) {
+      var btn = document.createElement("button");
+      btn.className = "answer-btn";
+      btn.innerHTML = '<span class="answer-emoji">' + a.emoji + '</span>' + a.label;
+      btn.onclick = function() { selectAnswer(a.scores, btn); };
+      container.appendChild(btn);
+    });
+
+    document.getElementById("resultCard").style.display = "none";
+    document.getElementById("questionText").style.display = "";
+    document.getElementById("answersContainer").style.display = "";
+
+    updateProgress();
+  }
+
+  function selectAnswer(answerScores, btn) {
+    // Highlight selected
+    document.querySelectorAll(".answer-btn").forEach(function(b) {
+      b.classList.remove("selected");
+      b.style.pointerEvents = "none";
+    });
+    btn.classList.add("selected");
+
+    // Add scores
+    Object.keys(answerScores).forEach(function(k) {
+      scores[k] += answerScores[k];
+    });
+
+    // Advance after short delay
+    setTimeout(function() {
+      current++;
+      if (current < TOTAL) {
+        fadeTransition(showQuestion);
+      } else {
+        fadeTransition(showResult);
+      }
+    }, 320);
+  }
+
+  function fadeTransition(cb) {
+    var body = document.getElementById("quizBody");
+    body.classList.add("fade-out");
+    body.style.opacity = "0";
+    setTimeout(function() {
+      cb();
+      body.style.opacity = "1";
+    }, 200);
+  }
+
+  function showResult() {
+    // Find winner
+    var winner = Object.keys(scores).reduce(function(a, b) {
+      return scores[a] >= scores[b] ? a : b;
+    });
+    var r = results[winner];
+
+    document.getElementById("questionText").style.display  = "none";
+    document.getElementById("answersContainer").style.display = "none";
+
+    document.getElementById("resultIcon").textContent   = r.icon;
+    document.getElementById("resultMethod").textContent = r.method;
+    document.getElementById("resultDesc").textContent   = r.desc;
+
+    var ctaEl = document.getElementById("resultCta");
+    ctaEl.href        = r.url;
+    ctaEl.textContent = r.cta;
+
+    var statsEl = document.getElementById("resultStats");
+    statsEl.innerHTML = "";
+    r.stats.forEach(function(s) {
+      var pill = document.createElement("div");
+      pill.className = "stat-pill";
+      pill.innerHTML = s.label + ": <span>" + s.value + "</span>";
+      statsEl.appendChild(pill);
+    });
+
+    var card = document.getElementById("resultCard");
+    card.style.display = "flex";
+
+    // Progress to 100%
+    document.getElementById("progressFill").style.width = "100%";
+    document.getElementById("progressLabel").textContent = "Your result";
+  }
+
+  function updateProgress() {
+    var pct = Math.round((current / TOTAL) * 100);
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressLabel").textContent =
+      "Question " + (current + 1) + " of " + TOTAL;
+  }
+
+  function restart() {
+    fadeTransition(init);
+  }
+
+  // ── Start ─────────────────────────────────────────────────────
+  init();
+</script>
+
+</body>
+</html>
